@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "pg": "^8.11.3",
-    "prompt-sync": "^4.2.0"
+    "prompt-sync": "^4.2.0",
+    "winston": "^3.11.0"
   }
 }
