@@ -1,15 +1,10 @@
 const db = require('./database_drive');
-const insert = require('prompt-sync')({ sigint: true });
+const prompt = require('prompt-sync')({ sigint: true });
 
-
-class EletricProducts {
-
+class ElectricProducts {
     constructor() {
-        this.controlMenu = null; // Menu principal
-        
-        this.sqlValue1 = null; // Valor que será inserido no banco de dados
-        
-        this.sqlValue2 = null; // Valor que será inserido no banco de dados
+        this.sqlValue1 = null;
+        this.sqlValue2 = null;
     }
 
     async connectSQL() {
@@ -20,89 +15,106 @@ class EletricProducts {
         await db.end();
     }
 
-    async mainMenu(connectSqlDrive) {
-        if (connectSqlDrive === 1) {
-            this.connectSQL();
-        }
-
+    async mainMenu() {
         console.clear();
         console.log("************************************************************************");
-        console.log("*                     ***Welcome the list items***                     *");
+        console.log("*                     ***Bem-vindo à Lista de Produtos***               *");
         console.log("*                                                                      *");
-        console.log("*                                                                      *");
-        console.log("* 1 - Insert a new item.                                              *");
-        console.log("* 2 - List all items.                                                 *");
-        console.log("* 3 - Delete item.                                                    *");
-        console.log("* 4 - Edit item.                                                      *");
-        console.log("* 5 - Exit.                                                           *");
+        console.log("* 1 - Inserir um novo produto                                        *");
+        console.log("* 2 - Listar todos os produtos                                       *");
+        console.log("* 3 - Excluir um produto                                            *");
+        console.log("* 4 - Editar um produto                                             *");
+        console.log("* 5 - Sair                                                           *");
         console.log("*                                                                      *");
         console.log("************************************************************************\n\n");
-        this.controlMenu = insert("Choice: ");
+        
+        const choice = prompt("Digite a sua escolha: ");
+        this.handleChoice(choice);
+    }
 
-        if (this.controlMenu == 0) {
-            this.mainMenu(3); //recursividade 
-        } else if (this.controlMenu == 1) {
-            console.clear();
-            console.log("\n\n\n");
-            this.sqlValue1 = insert("Enter the name of the new product ==> ");
-            this.InsertProducts(this.sqlValue1);
-            this.mainMenu(3); //1
-        } else if (this.controlMenu == 2) {
-            this.ReadProducts();
-        } else if (this.controlMenu == 3) {
-            console.clear();
-            console.log("\n\n\n");
-            this.sqlValue1 = insert("Enter the name of the product you want to remove ==> ");
-            this.DropProducts(this.sqlValue1);
-            this.mainMenu(3); //1
-        } else if (controlMenu == 4) {
-            console.clear();
-            console.log("\n\n\n");
-            this.sqlValue1 = insert("Enter the new value to be placed ==> ");
-            console.log("\n\n");
-            this.sqlValue2 = insert("Enter the name of the product to be changed ==> ");
-            this.EditProducts(this.sqlValue1, this.sqlValue2);
-            this.mainMenu(3); //1
-        } else if (controlMenu == 5) {
-            this.closeConnection(); // Encerrar a conexão com o banco de dados.
-        } else {
-            this.mainMenu();
+    async handleChoice(choice) {
+        switch (choice) {
+            case '1':
+                this.insertProduct();
+                break;
+            case '2':
+                this.readProducts();
+                break;
+            case '3':
+                this.deleteProduct();
+                break;
+            case '4':
+                this.editProduct();
+                break;
+            case '5':
+                this.closeConnection();
+                break;
+            default:
+                console.log("Escolha inválida. Por favor, tente novamente.");
+                this.mainMenu();
         }
     }
 
-    async InsertProducts(value) {
-
-        try{
-        const queryEvent = "INSERT INTO products (name_product) VALUES  ($1)";
-        await db.query(queryEvent, [value]);
-    } catch(error){
-        console.log("Erro ao inserir o produto:", error );
-    }
-     }
-    async ReadProducts() {
-        console.clear();
-        let rowCount = 1;
-        let resultDates = await db.query('SELECT name_product FROM products');
-
-        console.log("-----------------------");
-        resultDates.rows.map((element) => {
-            console.log("|" + (rowCount++) + "|>> " + element.name_product + " <<|");
-        });
-        console.log("-----------------------\n\n");
-        this.controlMenu = insert("Press ENTER to return");
-        this.mainMenu(3);
+    async insertProduct() {
+        const productName = prompt("Digite o nome do novo produto: ");
+        try {
+            const query = "INSERT INTO products (name_product) VALUES ($1)";
+            await db.query(query, [productName]);
+            console.log("Produto inserido com sucesso.");
+        } catch (error) {
+            console.log("Erro ao inserir o produto:", error);
+        }
+        this.mainMenu();
     }
 
-    async DropProducts(value) {
-        const queryEvent = "DELETE FROM products WHERE name_product = ($1)";
-        await db.query(queryEvent, [value]);
+    async readProducts() {
+        try {
+            const result = await db.query('SELECT name_product FROM products');
+            console.clear();
+            console.log("Lista de Produtos:");
+            result.rows.forEach((product, index) => {
+                console.log(`[${index + 1}] ${product.name_product}`);
+            });
+        } catch (error) {
+            console.log("Erro ao ler os produtos:", error);
+        }
+        prompt("Pressione Enter para retornar ao menu principal...");
+        this.mainMenu();
     }
 
-    async EditProducts(value, value2) {
-        const queryEvent = "UPDATE products SET name_product = ($1) WHERE name_product = ($2)";
-        await db.query(queryEvent, [value, value2]);
+    async deleteProduct() {
+        const productName = prompt("Digite o nome do produto que deseja remover: ");
+        try {
+            const query = "DELETE FROM products WHERE name_product = ($1)";
+            await db.query(query, [productName]);
+            console.log("Produto excluído com sucesso.");
+        } catch (error) {
+            console.log("Erro ao excluir o produto:", error);
+        }
+        this.mainMenu();
+    }
+
+    async editProduct() {
+        const currentName = prompt("Digite o nome do produto que deseja editar: ");
+        try {
+            const checkQuery = "SELECT * FROM products WHERE name_product = ($1)";
+            const result = await db.query(checkQuery, [currentName]);
+            
+            if (result.rows.length === 0) {
+                console.log("Produto não encontrado. A operação de edição não pode ser realizada.");
+            } else {
+                const newName = prompt("Digite o novo nome do produto: ");
+                const editQuery = "UPDATE products SET name_product = ($1) WHERE name_product = ($2)";
+                await db.query(editQuery, [newName, currentName]);
+                console.log("Produto editado com sucesso.");
+            }
+        } catch (error) {
+            console.log("Erro ao editar o produto:", error);
+        }
+        this.mainMenu();
     }
 }
 
-const obj = new EletricProducts();
-obj.mainMenu(1);
+const productManager = new ElectricProducts();
+productManager.connectSQL();
+productManager.mainMenu();
