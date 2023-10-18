@@ -40,7 +40,7 @@ class EletricProducts {
         this.controlMenu = insert("Choice: ");
 
         if (this.controlMenu == 0) {
-            this.mainMenu();
+            this.mainMenu(3); //recursividade 
         } else if (this.controlMenu == 1) {
             console.clear();
             console.log("\n\n\n");
@@ -71,10 +71,14 @@ class EletricProducts {
     }
 
     async InsertProducts(value) {
+
+        try{
         const queryEvent = "INSERT INTO products (name_product) VALUES  ($1)";
         await db.query(queryEvent, [value]);
+    } catch(error){
+        console.log("Erro ao inserir o produto:", error );
     }
-
+     }
     async ReadProducts() {
         console.clear();
         let rowCount = 1;
