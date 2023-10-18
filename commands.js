@@ -121,3 +121,4 @@ class ElectricProducts {
 const productManager = new ElectricProducts();
 productManager.connectSQL();
 productManager.mainMenu();
+setupButtonListeners();

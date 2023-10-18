@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento de Produtos</title>
+
+    <!-- Inclua os estilos do Carbon Design System -->
+    <link rel="stylesheet" href="https://unpkg.com/carbon-components@10.27.0/css/carbon-components.min.css">
+    <!-- Inclua o JavaScript do Carbon Design System -->
+    <script src="https://unpkg.com/carbon-components@10.27.0/js/carbon-components.min.js"></script>
+</head>
+<body>
+    <div class="bx--grid bx--grid--full-width">
+        <div class="bx--row">
+            <div class="bx--col">
+                <h1 class="bx--type-display-01">Bem-vindo à Lista de Produtos</h1>
+                <div class="bx--btn-set">
+                    <button id="btnInsert" class="bx--btn bx--btn--primary">Inserir um novo produto</button>
+                    <button id="btnList" class="bx--btn bx--btn--primary">Listar todos os produtos</button>
+                    <button id="btnDelete" class="bx--btn bx--btn--primary">Excluir um produto</button>
+                    <button id="btnEdit" class="bx--btn bx--btn--primary">Editar um produto</button>
+                    <button id="btnExit" class="bx--btn bx--btn--danger">Sair</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bx--modal" id="insertForm" style="display: none;">
+        <div class="bx--modal-container">
+            <h2 class="bx--modal-header">Inserir um novo produto</h2>
+            <div class="bx--modal-content">
+                <div class="bx--form-item">
+                    <label for="newProductName" class="bx--label">Nome do novo produto</label>
+                    <input type="text" id="newProductName" class="bx--text-input" placeholder="Nome do novo produto">
+                </div>
+            </div>
+            <div class="bx--modal-footer bx--btn-set">
+                <button class="bx--btn bx--btn--primary" onclick="insertProduct()">Inserir</button>
+                <button class="bx--btn bx--btn--secondary" onclick="closeInsertForm()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="bx--modal" id="listProductsResult" style="display: none;">
+        <div class="bx--modal-container">
+            <h2 class="bx--modal-header">Lista de Produtos</h2>
+            <div class="bx--modal-content">
+                <ul id="productsList" class="bx--list"></ul>
+            </div>
+            <div class="bx--modal-footer bx--btn-set">
+                <button class="bx--btn bx--btn--secondary" onclick="closeListProducts()">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="bx--modal" id="deleteForm" style="display: none;">
+        <div class="bx--modal-container">
+            <h2 class="bx--modal-header">Excluir um produto</h2>
+            <div class="bx--modal-content">
+                <div class="bx--form-item">
+                    <label for="productToDelete" class="bx--label">Nome do produto a ser excluído</label>
+                    <input type="text" id="productToDelete" class="bx--text-input" placeholder="Nome do produto a ser excluído">
+                </div>
+            </div>
+            <div class="bx--modal-footer bx--btn-set">
+                <button class="bx--btn bx--btn--danger" onclick="deleteProduct()">Excluir</button>
+                <button class="bx--btn bx--btn--secondary" onclick="closeDeleteForm()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="bx--modal" id="editForm" style="display: none;">
+        <div class="bx--modal-container">
+            <h2 class="bx--modal-header">Editar um produto</h2>
+            <div class="bx--modal-content">
+                <div class="bx--form-item">
+                    <label for="productToEdit" class="bx--label">Nome do produto a ser editado</label>
+                    <input type="text" id="productToEdit" class="bx--text-input" placeholder="Nome do produto a ser editado">
+                </div>
+                <div class="bx--form-item">
+                    <label for="newProductName" class="bx--label">Novo nome do produto</label>
+                    <input type="text" id="newProductName" class="bx--text-input" placeholder="Novo nome do produto">
+                </div>
+            </div>
+            <div class="bx--modal-footer bx--btn-set">
+                <button class="bx--btn bx--btn--primary" onclick="editProduct()">Editar</button>
+                <button class="bx--btn bx--btn--secondary" onclick="closeEditForm()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/app.js"></script>
+</body>
+</html>
