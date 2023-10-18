@@ -28,11 +28,14 @@ class ElectricProducts {
         console.log("*                                                                      *");
         console.log("************************************************************************\n\n");
         
+        ///Removida a propriedade menucontrol.
         const choice = prompt("Digite a sua escolha: ");
         this.handleChoice(choice);
     }
 
-    async handleChoice(choice) {
+
+    //criaação da função handler choice para lidar com as escolhas
+    async handleChoice(choice) {  //Um switch representa melhor que você está tomando uma decisão com base em um valor específico.
         switch (choice) {
             case '1':
                 this.insertProduct();
@@ -54,7 +57,7 @@ class ElectricProducts {
                 this.mainMenu();
         }
     }
-
+//// Foram colocadas aqui tratamento com blocos try catch para lidar com erros de inserir ler e editar
     async insertProduct() {
         const productName = prompt("Digite o nome do novo produto: ");
         try {
@@ -66,7 +69,7 @@ class ElectricProducts {
         }
         this.mainMenu();
     }
-
+///Funções de manipulação de produtos renomeadas para inciar com letra miniscula por conveção ES6
     async readProducts() {
         try {
             const result = await db.query('SELECT name_product FROM products');
